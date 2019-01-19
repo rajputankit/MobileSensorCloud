@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+	<script src="http://www.amcharts.com/lib/3/serial.js"></script>
+	<script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
+    
+    
+	<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <title>Admin - Mobile Sensor Cloud</title>
+
+<!--     Bootstrap Core CSS -->
+<!--     <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+<!--     MetisMenu CSS -->
+    <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+<!--     DataTables CSS -->
+    <link href="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+
+<!--     DataTables Responsive CSS -->
+    <link href="../bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+
+<!--     Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+<!--     Custom Fonts -->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body ng-app = "" class = "login" ng-controller = "appController">
+
+<style>
+#chartdiv {
+	width	: 100%;
+	height	: 500px;
+}									
+</style>
+
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/admin">Mobile Sensor Cloud</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                
+                    
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    
+                    <!-- /.dropdown-alerts -->
+                </li>
+                
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        
+                        <li>
+                            <a href="/admin"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                       
+                        <li>
+                            <li><a href="/signout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                      
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        
+                       
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+               <div>
+  
+  <h2 align="center">Administrator Dashboard</h2>
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Users</a></li>
+    <li><a data-toggle="tab" href="#menu1">Vendors</a></li>
+    <li><a data-toggle="tab" href="#menu2">Sensor Data</a></li>
+   
+  </ul>
+
+  <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+     
+     <div>
+  <h2>Users</h2>
+              
+  <table class="table table-striped" >
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody ng-repeat = "x in users">
+      <tr>
+        
+        <td>{{x.name}}</td>
+        <td>{{x.email}}</td>
+        <td><a href = "#" ng-click = "userprofile(x.email)">Select</a></td>
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+</div>
+
+
+						<div id="menu1" class="tab-pane fade">
+							<div>
+								<h2>Vendors</h2>
+
+								<table class="table table-striped">
+									<thead>
+										<tr>
+											<th>Name</th>
+											<th>Email</th>
+											<th>Details</th>
+										</tr>
+									</thead>
+									<tbody ng-repeat="x in sensorowner">
+										<tr>
+
+											<td>{{x.name}}</td>
+											<td>{{x.email}}</td>
+											<td><a href="#" ng-click="sensorownerprofile(x.email)">Select</a></td>
+										</tr>
+
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+
+
+
+
+<div id="menu2" class="tab-pane fade">
+	<div class="container" style="width:90%;">
+		<h2>Sensor Data</h2>
+
+
+<input type = "radio" name = "filterlocation" ng-model = "filterlocation" value = "San Jose"/>&nbsp San Jose &nbsp
+<input type = "radio" name = "filterlocation" ng-model = "filterlocation" value = "San Francisco"/>&nbsp San Francisco &nbsp
+<input type = "radio" name = "filterlocation" ng-model = "filterlocation" value = "Las Vegas"/>&nbsp Las Vegas &nbsp
+    
+    <button type="button" class="btn btn-success" ng-click = "generategraphs()">Generate Graph</button>
+    
+
+	<br><br><br>
+
+<div id="chartdiv" ng-show="showgraph"></div>	
+
+	
+		
+<div class="panel-group" id="accordion">
+	
+	<div class="panel panel-default" ng-repeat = "sensorObject in sensordata">
+	
+		<div class="panel-heading">
+      		<h2 class="panel-title">
+        		<a data-toggle="collapse" data-parent="#accordion" href=#{{sensorObject.sensorid}}>
+                                    
+                                    
+                                            {{sensorObject.sensorid}}
+                                            {{sensorObject.sensorname}}
+                                            {{sensorObject.sensorlocation}}
+                                        
+                                    
+                                
+                </a>
+      		</h2>
+    	</div>
+    	
+        
+        <div id={{sensorObject.sensorid}} class="panel-group">
+            
+            <div id="collapse2" class="panel-collapse collapse in" ng-repeat= "x in sensorObject.sensordata[0].data.weather" >
+              <br>Date :  
+              <a data-toggle="collapse"  data-parent=#{{sensorObject.sensorid}} href=#{{x.date}} >{{x.date}}</a> <br>
+                
+                <div id={{x.date}} class="panel-header">
+                    
+                    <div class="panel-collapse collapse in" ng-repeat= "y in x.hourly" >
+                     <br>Time :
+                       <a data-toggle="collapse"  data-parent=#{{x.date}}  href=#{{y.time}}  >{{y.time}}</a> HRS <br>
+                
+                         <div id={{y.time}} class="panel-header" >
+                
+                                <table class="table table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>Temperature</th>
+                                            <th>Pressure</th>
+                                            <th>Humidity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+
+                                            <td>{{y.tempC}} °C</td>
+                                            <td>{{y.pressure}} mb</td>
+                                            <td>{{y.humidity}} %</td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+                                
+                                
+                           </div>
+                    </div>  
+                </div>    
+            </div>
+        </div>
+
+
+
+
+
+
+
+        </div>
+    </div>
+
+
+
+    	</div>
+    	
+
+  
+  </div> 
+</div>
+		
+		
+		
+		
+		
+		
+	</div>
+		
+						
+						
+
+
+	
+</div>
+
+<br><br>
+
+ <div>
+  <h2>Sensors</h2>
+              
+  <table class="table table-striped" >
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Type</th>
+        <th>Status</th>
+        <th>Location</th>
+        <th>Vendor Email</th>
+        <th>Details</th>
+      </tr>
+    </thead>
+    <tbody ng-repeat = "sensor in sensors">
+      <tr>
+        
+        
+        <td><a href = "#" ng-click = "sensorprofile(sensor.sensorid)">{{sensor.sensorid}}</a></td>
+        <td>{{sensor.sensorname}}</td>
+        <td>{{sensor.sensortype}}</td>
+        <td>{{sensor.status}}</td>
+        <td>{{sensor.sensorlocation}}</td>
+        <td>{{sensor.email}}</td>
+        <td><button type="button" class="btn btn-link" ng-click = "sensorprofile(sensor.sensorid)">Select</button></td>
+      </tr>
+      
+    </tbody>
+  </table>
+</div>
+                            <!-- /.table-responsive -->
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+<!--    Bootstrap Core JavaScript -->
+<!--     <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+
+<!--   Metis Menu Plugin JavaScript -->
+    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+   <!-- DataTables JavaScript -->
+    <script src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+ <!--   Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+                responsive: true
+        });
+    });
+    </script>
+    
+    
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+   
+        function appController($scope, $window, $http) {
+        	
+        	//alert("chart is " + $window.chart.type);
+        	
+        	
+        	$scope.users = {};
+        	$scope.sensorowner = {};
+        	$scope.workingsensors = [];
+        	$scope.sensordata;
+        	$scope.sensorgraphs = [];
+        	
+        	$window.chart.dataProvider = [];
+ 	 	 		
+ 	 		
+        	  
+        	      	
+        	$http({method: 'GET', url: '/getusers'}).then(function successCallback(response) {
+    		    
+        		$scope.users = response.data;    
+        		alert(JSON.stringify($scope.users));
+    	            			
+    		}, function errorCallback(response) {});    
+        	
+        	
+        	$scope.userprofile = function(useremail) {
+        		
+        		$http({method: 'POST', url: '/userprofile', data: {"useremail": useremail}}).then(function successCallback(response) {
+        		    
+            		alert("going to user profile");
+            		window.location.assign("/userprofile");
+        	            			
+        		}, function errorCallback(response) {});   
+        	}
+        	        	
+        	
+			$http({method: 'GET', url: '/getsensorowners'}).then(function successCallback(response) {
+    		    
+        		$scope.sensorowner = response.data;    
+        		alert(JSON.stringify($scope.sensorowner));
+    	            			
+    		}, function errorCallback(response) {});    
+        	
+        	
+        	$scope.sensorownerprofile = function(sensorowneremail) {
+        		
+        		$http({method: 'POST', url: '/sensorownerprofile', data: {"sensorowneremail": sensorowneremail}}).then(function successCallback(response) {
+        		    
+            		alert("going to sensorowner profile");
+            		window.location.assign("/sensorownerprofile");
+        	            			
+        		}, function errorCallback(response) {});   
+        	}
+        	
+        	
+        	$http({method: 'GET', url: '/getallsensors'}).then(function successCallback(response) {
+    		    
+        		$scope.workingsensors[0] = 0;
+        		$scope.workingsensors[1] = 0;
+        		
+				$scope.sensors = response.data[0];
+				//alert("sensors : " + JSON.stringify(response.data[0]));
+				console.log("sensors are " + JSON.stringify($scope.sensors));
+				
+				for(var i = 0; i < $scope.sensors.length; i++){	
+							
+					if($scope.sensors[i].status == 'on'){$scope.workingsensors[0]++;}
+					$scope.workingsensors[1]++;
+				}
+				
+				alert("working sensors " + $scope.workingsensors[0] + " total sensors " + $scope.workingsensors[1]);
+				
+				$scope.sensordata = response.data[1];
+				
+		
+        
+        		
+        	/*	
+        		alert("going in");		
+        		
+        			 
+ 	 		 for(x in $scope.sensordata){		
+ 	 		 
+				for(y in $scope.sensordata[x].sensordata[0].data.weather){	//x.sensordata[0]
+				
+				
+					$window.chart.dataProvider.push({"date": $scope.sensordata[x].sensordata[0].data.weather[y].date, "value": $scope.sensordata[x].sensordata[0].data.weather[y].maxtempC});
+					//$window.chart.dataProvider.push({"date": "2012-07-27","value": 13});
+					//alert("chart is " + JSON.stringify($window.chart.dataProvider));	
+				} 	 		 
+ 	 		 
+ 	 		 }
+        	*/	
+        		
+        		
+        		alert(JSON.stringify($scope.sensordata));
+        		alert("test" + $scope.sensordata[0].sensordata[0].data.weather[0].date);
+        	//	ng-repeat = "date in sensordata" >
+      		//	{{data.request}}
+      		//	{{date.sensordata[0].data.weather[0].date}}
+        		
+        		
+        		//console.log("sensordata " + JSON.stringify($scope.sensordata[0].sensordata[0].data.weather[0].date));
+        		$window.chart.validateData();
+    	            			
+    		}, function errorCallback(response) {}); 
+        	
+        	
+        	
+        	
+        	
+        $scope.generategraphs = function(){
+        		
+        		$scope.showgraph = true;
+        		
+        		while($scope.sensorgraphs.length > 0) {
+    						$scope.sensorgraphs.pop();
+									}
+        		
+        		alert("filter by " + $scope.filterlocation);     		
+        		
+        		for(x in $scope.sensordata){
+        			
+        			
+        			if($scope.sensordata[x].sensorlocation.toString().toLowerCase() == $scope.filterlocation.toString().toLowerCase()){
+        			
+						        				
+        				$scope.sensorgraphs.push($scope.sensordata[x]);        				
+        			}        			
+        		}
+        	
+        
+        
+        		//sensorgraphs
+        
+        
+        	alert("going in");		
+        		
+        			 
+ 	 		 	for(x in $scope.sensorgraphs){		
+ 	 		
+ 	 				for(y in $scope.sensorgraphs[x].sensordata[0].data.weather){	
+				
+						$window.chart.dataProvider.push({"date": $scope.sensorgraphs[x].sensordata[0].data.weather[y].date, "value": $scope.sensorgraphs[x].sensordata[0].data.weather[y].maxtempC});
+						//alert($window.chart.dataProvider);
+					}
+ 	 		 	}
+ 	 		 	
+ 	 		 	alert("graph data " + JSON.stringify($scope.sensorgraphs));
+ 	 		 	$window.chart.validateData();
+        
+        
+        	}
+        	
+        	
+        	
+        	
+        	
+        	$scope.sensorprofile = function(sensorid){
+				alert("in sensor profile");
+				
+				$http({method: 'POST', url: '/sensorprofile', data: {"sensorid": sensorid}}).then(function successCallback(response){
+					
+					alert("going to SENSOR profile");
+            		window.location.assign("/sensorprofile");
+					
+				}, function errorCallback(response) {});
+			}
+        	
+        	
+		};
+	
+	
+	var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "light",
+    "marginRight": 80,
+    "autoMarginOffset": 20,
+    "dataDateFormat": "YYYY-MM-DD",
+    "valueAxes": [{
+        "id": "v1",
+        "axisAlpha": 0,
+        "position": "left"
+    }],
+    "balloon": {
+        "borderThickness": 1,
+        "shadowAlpha": 0
+    },
+    "graphs": [{
+        "id": "g1",
+        "bullet": "round",
+        "bulletBorderAlpha": 1,
+        "bulletColor": "#FFFFFF",
+        "bulletSize": 5,
+        "hideBulletsCount": 50,
+        "lineThickness": 2,
+        "title": "red line",
+        "useLineColorForBulletBorder": true,
+        "valueField": "value",
+        "balloonText": "<div style='margin:5px; font-size:19px;'><span style='font-size:13px;'>[[category]]</span><br>[[value]]</div>"
+    }],
+    "chartScrollbar": {
+        "graph": "g1",
+        "oppositeAxis":false,
+        "offset":30,
+        "scrollbarHeight": 80,
+        "backgroundAlpha": 0,
+        "selectedBackgroundAlpha": 0.1,
+        "selectedBackgroundColor": "#888888",
+        "graphFillAlpha": 0,
+        "graphLineAlpha": 0.5,
+        "selectedGraphFillAlpha": 0,
+        "selectedGraphLineAlpha": 1,
+        "autoGridCount":true,
+        "color":"#AAAAAA"
+    },
+    "chartCursor": {
+        "pan": true,
+        "valueLineEnabled": true,
+        "valueLineBalloonEnabled": true,
+        "cursorAlpha":0,
+        "valueLineAlpha":0.2
+    },
+    "categoryField": "date",
+    "categoryAxis": {
+        "parseDates": true,
+        "dashLength": 1,
+        "minorGridEnabled": true
+    },
+    "export": {
+        "enabled": true
+    },
+    "dataProvider": []
+});
+
+chart.addListener("rendered", zoomChart);
+
+zoomChart();
+
+function zoomChart() {
+    chart.zoomToIndexes(chart.dataProvider.length - 40, chart.dataProvider.length - 1);
+}
+	
+	
+	</script>
+
+</body>
+
+</html>

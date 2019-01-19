@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+  <head>      
+    <link rel="stylesheet" type="text/css">
+    <title></title>    
+  </head>
+  
+  <body ng-app = "" class = "login">
+    
+		
+	<div ng-controller = "appController">
+			
+		<div>
+			Sensor Name : <input name = "sensorname" ng-model = "sensor.name"> <br>
+			Sensor Location : <input name = "sensordata" ng-model = "sensor.location"> <br>
+			Sensor Type : <input name = "sensortype" ng-model = "sensor.type"> <br>
+			
+			<button ng-click = "addsensor()">Add Sensor</button>
+			
+			
+			
+			<span ng-repeat = "x in sensors">
+						
+				<p ng-show = "!showeditsensor">{{x.sensorname}} {{x.sensorlocation}} {{x.sensortype}} {{x.status}}</p>				
+				<p ng-show = "showeditsensor">
+					<input ng-model = "x.sensorname" value = "{{x.sensorname}}"></input>
+					<input ng-model = "x.sensorlocation" value = "{{x.sensorlocation}}"></input>
+					
+				</p>
+				
+				<button class = "btn btn-success" type = "button" ng-click = "togglesensor(x, x.sensorid, 'off'); display = !display; x.status = 'off';" ng-show = "!display">Click to Toggle Status</button>									
+				<button class = "btn btn-success" type = "button" ng-click = "togglesensor(x, x.sensorid, 'on'); display = !display; x.status = 'on';" ng-show = "display">Click to Toggle Status</button>
+				
+				<button ng-click = "editsensor(x); showeditsensor = true;">Edit Sensor</button>
+				<button ng-click = "removesensor(x.sensorid)">Remove Sensor</button>
+				
+			</span>
+			
+			
+			<form method = "GET" action = "/signout">
+				<button type = "submit">Sign Out</button>		
+			</form>	
+		
+			
+			
+		</div>		
+
+	</div>
+			
+	    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+        function appController($scope, $http) {
+        	
+        	$scope.sensor = {};
+        	$scope.sensors = [];
+        	$scope.showeditsensor = false;
+        	
+        	$http({method: 'GET', url: '/getsensors'}).then(function successCallback(response) {
+    		    
+        		$scope.sensors = response.data;    
+        		alert(JSON.stringify($scope.sensors));
+    	            			
+    		}, function errorCallback(response) {});      	
+        	
+        				   	
+        	$scope.addsensor = function(){
+        		
+        		$http({method: 'POST', url: '/addsensor', data: $scope.sensor}).then(function successCallback(response) {
+            		    
+        				//alert("Sensor data is : " + JSON.stringify($scope.sensor));
+        				$scope.sensors.push({"email": $scope.sensors[0].email, "sensorname": $scope.sensor.name, "sensorlocation":$scope.sensor.location, "sensortype": $scope.sensor.type});
+        				//alert("ALL SENSOR DATA " + JSON.stringify($scope.sensors));
+            			alert("Sensor Added");        
+            			window.location.assign("/sensorowner");
+            	            			
+            	}, function errorCallback(response) {});      
+        	}
+        	
+			
+        	$scope.editsensor = function(newsensordata){
+        		
+        		alert("newsensordata " + JSON.stringify(newsensordata));
+        		$http({method: 'POST', url: '/editsensor', data: newsensordata}).then(function successCallback(response) {
+            		    
+        				alert("Edited Data : " + JSON.stringify($scope.sensors));
+	           			alert("sensor EDITED");            				
+            	            			
+            	}, function errorCallback(response) {});      
+        	}
+        	
+        	
+        	
+			$scope.togglesensor = function(x, sensorid, status){
+        		
+        		$http({method: 'POST', url: '/togglesensor', data: {sensorid: sensorid, status: status}}).then(function successCallback(response) {
+            		    
+        				alert("changed status");
+        				//x.status = status;
+        				
+            	            			
+            	}, function errorCallback(response) {});      
+        	}
+        	
+        	
+        	
+        	
+			$scope.removesensor = function(sensorid){
+        		
+				var id = {"sensorid" : sensorid};
+        		$http({method: 'POST', url: '/removesensor', data: id}).then(function successCallback(response) {
+            		    
+            			alert("sensor DELETED");    
+            			
+            			for(var i = 0; i < $scope.sensors.length; i++) {
+            				
+            			    if($scope.sensors[i].sensorid === sensorid) {
+            			       $scope.sensors.splice(i, 1);
+            			    }
+            			}
+            	            			
+            	}, function errorCallback(response) {});      
+        	}
+        	
+		};
+	</script>
+	
+  </body>
+</html>

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <script src="http://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="http://www.amcharts.com/lib/3/serial.js"></script>
+    <script src="http://www.amcharts.com/lib/3/themes/light.js"></script>
+    
+    
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+    <title>Admin - Mobile Sensor Cloud</title>
+
+<!--     Bootstrap Core CSS -->
+<!--     <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+
+<!--     MetisMenu CSS -->
+    <link href="../bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet">
+
+<!--     DataTables CSS -->
+    <link href="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css" rel="stylesheet">
+
+<!--     DataTables Responsive CSS -->
+    <link href="../bower_components/datatables-responsive/css/dataTables.responsive.css" rel="stylesheet">
+
+<!--     Custom CSS -->
+    <link href="../dist/css/sb-admin-2.css" rel="stylesheet">
+
+<!--     Custom Fonts -->
+    <link href="../bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body ng-app = "" class = "login" >
+
+<style>
+#chartdiv {
+    width   : 100%;
+    height  : 500px;
+}                                   
+</style>
+
+
+    <div id="wrapper">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/admin">Mobile Sensor Cloud</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+                
+                    
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    
+                    <!-- /.dropdown-alerts -->
+                </li>
+                
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div class="navbar-default sidebar" role="navigation">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul class="nav" id="side-menu">
+                        
+                        <li>
+                            <a href="/sensorowner"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                       
+                        <li>
+                            <li><a href="/signout"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                      
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        
+                       
+                    </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper">
+            <div class="row">
+               <div>
+  
+  
+  
+
+    <div ng-controller = "appController">
+            
+<h2 align="center">Vendor Dashboard</h2>
+
+<br>
+
+<h2>Add Sensor</h2>
+
+
+
+        <div class="form-group">
+            <label>Sensor Name</label>
+            <input class="form-control" name = "sensorname" ng-model = "sensor.name" placeholder="Sensor Name" style="width:20%;" > <br>
+            
+            <label>Sensor Location</label>
+            <input class="form-control" name = "sensordata" ng-model = "sensor.location" placeholder="Sensor Location" style="width:20%;"> <br>
+            
+            <label>Sensor Type</label>
+            <input class="form-control" name = "sensortype" ng-model = "sensor.type" placeholder="Sensor Type" style="width:20%;"> <br>
+            <button type="button" class="btn btn-success" ng-click = "addsensor()">Add Sensor</button>
+            
+        </div>
+            
+           
+<br><br><br><br>
+
+<h2>Sensor Status</h2>
+
+            <span ng-repeat = "x in sensors">
+                        
+                <strong style="display:inline" ng-show = "!showeditsensor">{{x.sensorname}} {{x.sensorlocation}} {{x.sensortype}} {{x.status}}</strong>              
+                <p ng-show = "showeditsensor" >
+                    <input ng-model = "x.sensorname" value = "{{x.sensorname}}"></input>
+                    <input ng-model = "x.sensorlocation" value = "{{x.sensorlocation}}"></input>
+                    
+                </p>
+             
+                
+                <button style= "margin-left: 100px;" class = "btn btn-primary" type = "button" ng-click = "togglesensor(x, x.sensorid, 'off'); display = !display; x.status = 'off';" ng-show = "!display">Click to Toggle Status</button>                                   
+                <button class = "btn btn-success" type = "button" ng-click = "togglesensor(x, x.sensorid, 'on'); display = !display; x.status = 'on';" ng-show = "display">Toggle Status</button>
+                
+                <button type="button" class="btn btn-warning" ng-click = "editsensor(x); showeditsensor = true;" >Edit Sensor</button>
+                
+                <button type="button" class="btn btn-danger" ng-click = "removesensor(x.sensorid)" >Remove Sensor</button>
+             
+                                
+                <br><br>
+                
+            </span>
+            
+            
+
+        
+            
+            
+        </div>      
+
+    </div>
+            
+
+        
+
+
+   
+
+
+  
+
+                
+
+
+
+
+
+
+
+<br><br>
+
+ 
+                            <!-- /.table-responsive -->
+                        
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                
+        <!-- /#page-wrapper -->
+
+    </div>
+    <!-- /#wrapper -->
+
+    <!-- jQuery -->
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+
+<!--    Bootstrap Core JavaScript -->
+<!--     <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script> -->
+
+<!--   Metis Menu Plugin JavaScript -->
+    <script src="../bower_components/metisMenu/dist/metisMenu.min.js"></script>
+
+   <!-- DataTables JavaScript -->
+    <script src="../bower_components/datatables/media/js/jquery.dataTables.min.js"></script>
+    <script src="../bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js"></script>
+
+ <!--   Custom Theme JavaScript -->
+    <script src="../dist/js/sb-admin-2.js"></script>
+
+    <!-- Page-Level Demo Scripts - Tables - Use for reference -->
+    <script>
+    $(document).ready(function() {
+        $('#dataTables-example').DataTable({
+                responsive: true
+        });
+    });
+    </script>
+    
+    
+    
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+   <script>
+        function appController($scope, $http) {
+            
+            $scope.sensor = {};
+            $scope.sensors = [];
+            $scope.showeditsensor = false;
+            
+            $http({method: 'GET', url: '/getsensors'}).then(function successCallback(response) {
+                
+                $scope.sensors = response.data;    
+                alert(JSON.stringify($scope.sensors));
+                                
+            }, function errorCallback(response) {});        
+            
+                            
+            $scope.addsensor = function(){
+                
+                $http({method: 'POST', url: '/addsensor', data: $scope.sensor}).then(function successCallback(response) {
+                        
+                        //alert("Sensor data is : " + JSON.stringify($scope.sensor));
+                        $scope.sensors.push({"email": $scope.sensors[0].email, "sensorname": $scope.sensor.name, "sensorlocation":$scope.sensor.location, "sensortype": $scope.sensor.type});
+                        //alert("ALL SENSOR DATA " + JSON.stringify($scope.sensors));
+                        alert("Sensor Added");        
+                        window.location.assign("/sensorowner");
+                                        
+                }, function errorCallback(response) {});      
+            }
+            
+            
+            $scope.editsensor = function(newsensordata){
+                
+                alert("newsensordata " + JSON.stringify(newsensordata));
+                $http({method: 'POST', url: '/editsensor', data: newsensordata}).then(function successCallback(response) {
+                        
+                        alert("Edited Data : " + JSON.stringify($scope.sensors));
+                        alert("sensor EDITED");                         
+                                        
+                }, function errorCallback(response) {});      
+            }
+            
+            
+            
+            $scope.togglesensor = function(x, sensorid, status){
+                
+                $http({method: 'POST', url: '/togglesensor', data: {sensorid: sensorid, status: status}}).then(function successCallback(response) {
+                        
+                        alert("changed status");
+                        //x.status = status;
+                        
+                                        
+                }, function errorCallback(response) {});      
+            }
+            
+            
+            
+            
+            $scope.removesensor = function(sensorid){
+                
+                var id = {"sensorid" : sensorid};
+                $http({method: 'POST', url: '/removesensor', data: id}).then(function successCallback(response) {
+                        
+                        alert("sensor DELETED");    
+                        
+                        for(var i = 0; i < $scope.sensors.length; i++) {
+                            
+                            if($scope.sensors[i].sensorid === sensorid) {
+                               $scope.sensors.splice(i, 1);
+                            }
+                        }
+                                        
+                }, function errorCallback(response) {});      
+            }
+            
+        };
+    </script>    
+   
+
+</body>
+
+</html>

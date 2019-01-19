@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+  <head>      
+    <link rel="stylesheet" type="text/css">
+    <title></title>    
+  </head>
+  
+  <body ng-app = "" class = "login">
+    
+		
+	<div ng-controller = "appController">
+			
+		<div>
+			Email : <input name = "email" ng-model = "user.email"> <br>
+			Name : <input name = "name" ng-model = "user.name"> <br>
+			password : <input name = "password" ng-model = "user.password"> <br>
+			mobile : <input name = "mobile" ng-model = "user.mobile"> <br>
+			<button ng-click = "signup()">SIGN UP</button>
+		</div>		
+
+	</div>
+	
+	
+			
+	    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+        function appController($scope, $http) {
+        	
+        	$scope.user = {};
+        	$scope.data = [];
+        	
+			$scope.signup = function(){
+        		
+				$scope.data[0] = $scope.user;
+        		$scope.data[1] = 2;
+				
+        		$http({method: 'POST', url: '/signup', data: $scope.data, processData: false}).then(function successCallback(response) {
+        		    	
+        				console.log(response.data);
+        				if(response.data == "already"){
+        					
+        					console.log("in else exists");
+        					alert("User with this email already exists");
+        					$scope.displayexists = true;
+        				}
+        				else if(response.data == "registered"){
+        					
+        					window.location.assign("/sensorowner");
+	        			}
+    	    			else{
+        					console.log("IN ELSE");
+        				}        			
+        				
+        		}, function errorCallback(response) {});  
+        	}
+        	
+        	
+        	
+        	
+        	$scope.signin = function(){
+        		
+            	$http({method: 'POST', url: '/signin', data: $scope.credentials}).then(function successCallback(response) {
+            		    
+            			if(response.data == "authorize"){
+            				
+            				window.location.assign("/home");
+            			}
+            			else{
+            				if(response.data == "password"){
+            					
+            					$scope.validate = true;
+            					$scope.validatevar = "Please Enter Password";
+            				}
+            				else{
+            					$scope.validate = true;
+            					$scope.validatevar = "Invalid Email / Password credentials";
+            				}
+            			}
+            			
+            		  }, function errorCallback(response) {});        	
+            	}
+		};
+	</script>
+	
+  </body>
+</html>

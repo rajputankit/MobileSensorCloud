@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  
+    <title>Calculator</title>
+  </head>
+  <body>
+  
+  	<form method = "get" action = "/checknest">
+  	
+  		<button type = "submit">check</button>
+  	</form>
+
+
+	<button onclick = "getdata()">get data</button>
+
+
+
+	<script>
+	
+	function getdata(){
+		
+		var Httpreq = new XMLHttpRequest(); // a new request
+		Httpreq.open("GET","http://api.worldweatheronline.com/premium/v1/past-weather.ashx?key=2c4c4cdc97531b58ad9583a761396&q=san+francisco,us&date=2009-07-20&format=json",false);
+		Httpreq.send(null);
+		var sensordata = JSON.parse(Httpreq.responseText);
+		
+		
+		console.log(sensordata.data.weather[0].date);
+		
+		alert(sensordata.data);
+		
+		for(var x in sensordata.weather){
+			
+			alert(x);
+			console.log(x);
+		}
+		
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	</script>
+
+
+  </body>
+  
+  
+  
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>      
+    <link rel="stylesheet" type="text/css">
+    <title></title>    
+  </head>
+  
+  <body ng-app = "" class = "login">
+    
+    <h3>Hello User, Purchase some sensors</h3>
+		
+	<div ng-controller = "appController">
+			
+		<div>
+			
+<!-- 			enter sensor location to search <input ng-model = "sensorlocation"> -->
+<!-- 			<button ng-click = "search()">Search</button> -->
+			
+<!-- 			<span ng-repeat = "x in searchresult"> -->
+						
+<!-- 				<p>Sensor Name : {{x.sensorname}}  Sensor Data : {{x.sensorlocation}} Sensor Type : {{x.sensortype}}</p> -->
+<!-- 				<button ng-click = "addsensortouser(x.sensorid)">add sensor</button> -->
+				
+<!-- 			</span> -->
+			
+			
+			<span ng-repeat = "x in sensordata">
+						
+				<p>Sensor Name : {{x.sensorid}} Sensor Name : {{x.sensorname}} Sensor Location : {{x.sensorlocation}}  
+				<p></p>
+				<span ng-repeat = "z in x.sensordata">{{z}}</span>
+				
+			</span>
+			
+			<p>tariff plan</p> 
+			<input type = "radio" name = "tariffplan" ng-model = "tariffplan" value = "1" ng-selected = "true" ng-checked = "true" ng-click = "showfirstlocation = true; showsecondlocation = false;">plan one
+			<input type = "radio" name = "tariffplan" ng-model = "tariffplan" value = "2" ng-click = "showfirstlocation = true; showsecondlocation = true;">plan two
+			<input type = "radio" name = "tariffplan" ng-model = "tariffplan" value = "3" ng-click = "showfirstlocation = false; showsecondlocation = false;">plan three
+						
+			<button ng-click = "updatetariff()">Update Tariff</button>
+			
+			
+			sensor location<input ng-model = "tariffsensorlocation" ng-show = "showfirstlocation">
+			sensor location1<input ng-model = "tariffsensorlocation1" ng-show = "showsecondlocation">
+			<button ng-click = "updatelocation()">Update Location</button>
+			
+			{{bill}}
+			<form method = "GET" action = "/signout">
+				<button type = "submit">Sign Out</button>		
+			</form>	
+		
+			
+			
+		</div>		
+
+	</div>
+			
+	    
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.1/angular.min.js"></script>
+    <script>
+        function appController($scope, $http) {
+        	
+        	$scope.searchresult = [];
+        	$scope.sensors = [];
+        	$scope.sensordata = [];
+        	$scope.showfirstlocation = true;
+        	$scope.showsecondlocation = true;
+        	
+        	
+        	$http({method: 'GET', url: '/getsensordata'}).then(function successCallback(response){
+    			
+        		alert(JSON.stringify(response.data));
+        		console.log(JSON.stringify(response.data));
+        		$scope.sensordata = response.data;
+        		    			
+    		});
+        	
+        	
+			$http({method: 'GET', url: '/getuserselfprofile'}).then(function successCallback(response){
+    			
+        		alert(JSON.stringify(response.data));
+        		$scope.tariffplan = response.data[0].tariffplan;
+        		$scope.bill = response.data[0].bill;
+        		
+        		alert("tariffplan : " + $scope.tariffplan);
+        		
+        		
+        		if($scope.tariffplan == 1){
+        			
+        			$scope.showfirstlocation = true;
+        			$scope.showsecondlocation = false;
+        			$scope.tariffsensorlocation = response.data[0].sensorlocation;
+        		}
+        		else if($scope.tariffplan == 2){
+        			
+        			$scope.showfirstlocation = true;
+        			$scope.showsecondlocation = true;
+        			$scope.tariffsensorlocation = response.data[0].sensorlocation;
+        			$scope.tariffsensorlocation1 = response.data[0].sensorlocation1;
+        		}
+        		else if($scope.tariffplan == 3){
+        			
+        			$scope.showfirstlocation = false;
+        			$scope.showsecondlocation = false;
+        		}
+        		
+        		
+    			//alert("sensor data retrieved : " + JSON.stringify(response.data[0].sensordata[0]));
+    			
+    		});
+        	
+        	
+        	
+        	$scope.updatetariff = function(){
+        		
+        		alert("updating... tariffplan " + $scope.tariffplan);
+        		
+        		$http({method: 'POST', url: '/updatetariff', data:{tariffplan: $scope.tariffplan}}).then(function successCallback(response){
+        			
+            		alert("Updated Tariff");
+            		window.location.assign("/user");
+        			
+        		});        		
+        	}
+        	
+        	
+			$scope.updatelocation = function(){
+        		
+        		alert("updating... tarifflocation " + $scope.tariffsensorlocation + " " + $scope.tariffsensorlocation1);
+        		
+        		
+        		
+        		$http({method: 'POST', url: '/updatetariffsensorlocation', data:{tariffsensorlocation: $scope.tariffsensorlocation, tariffsensorlocation1: $scope.tariffsensorlocation1}}).then(function successCallback(response){
+        			
+            		alert("Updated tariff location");
+            		window.location.assign("/user");
+        			
+        		});        		
+        	}
+        	
+        	
+//         	$scope.search = function (){
+	        	
+//         		alert("searching");
+//         		$http({method: 'POST', url: '/getusersensors', data: {"sensorlocation" : $scope.sensorlocation}}).then(function successCallback(response) {
+    		    
+//         			alert("search result " + JSON.stringify(response.data));
+//     	    		$scope.searchresult = response.data;    
+//         			//alert(JSON.stringify($scope.sensors));
+    	            			
+//     			}, function errorCallback(response) {});
+//         	}
+        	
+        	
+//         	$scope.addsensortouser = function(sensorid){
+        		
+//         		$http({method: 'POST', url: '/addsensortouser', data: {"sensorid" : sensorid}}).then(function successCallback(response){
+        			
+//         			alert("sensor added to user account");
+        			
+//         		});
+//         	}
+
+		};
+	</script>
+	
+  </body>
+</html>
